@@ -1,9 +1,9 @@
 # webpack-inject-loader
-#Installation 
-> **npm install webpack-inject-loader**
-
-
+Installation
 -------------
+```
+npm install webpack-inject-loader
+```
 Description
 -------------
 have a large function that cant be easily modulelize into seprate functions? 
