@@ -44,3 +44,18 @@ function getRandomHexColor(){
 return hex
 }
 ```
+###webpack
+```
+module.exports = {
+	entry:'path',
+	module:{
+		loaders:[
+			{
+				test:/\.js/,
+				loaders:['webpack-inject-loader','babel']
+			}
+		]
+	}
+
+}
+```
