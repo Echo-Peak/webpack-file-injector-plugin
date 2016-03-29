@@ -15,8 +15,8 @@ Usage
 -------------
 > **in-some-file.js**
 
+###before
 ```
-before
 
 function getRandomHexColor(){
 	var hexabet = '0123456789abcdef';
@@ -31,8 +31,9 @@ function getRandomHexColor(){
 return hex
 }
 ```
+###after
 ```
-after
+
 
 function getRandomHexColor(){
 	var hexabet = '0123456789abcdef';
