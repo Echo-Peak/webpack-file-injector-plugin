@@ -13,7 +13,21 @@ inject code blocks into file without haveing webpack to put small chuncks of cod
 
 Usage
 -------------
+Options:
+```
+{
+	console:{
+		enabled:<Boolean: Default = true> 
+		color:<red ,green ,yellow, purple,blue,lightBlue : Default = lightBlue>
+	},
+	regexp:{
+		startWith:<String : Default = @inject> *this will be transformed into a regexp,
+		safe:<Boolean : Default = true> *always start regexp with // or not
+	}
+}
+```
 > **in-some-file.js**
+
 
 ###before
 ```
@@ -46,13 +60,28 @@ return hex
 ```
 ###webpack
 ```
+var optionalSettings = {
+	enable:true,
+	console:{
+		enable:true,
+		color:'red'
+	},
+	regex:{
+		startWith:'STARTwithThis',
+		safe:true
+	}
+}
+
 module.exports = {
 	entry:'path',
 	module:{
 		loaders:[
 			{
 				test:/\.js/,
-				loaders:['webpack-inject-loader','babel']
+				loaders:[
+				'webpack-inject-loader?'+JSON.stringify(optionalSettings ),
+				'babel'
+				]
 			}
 		]
 	}
