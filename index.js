@@ -26,7 +26,7 @@ class InjectFile extends EventEmitter{
     if(typeof obj === 'object' && obj !== null){
         available = {
           keyword:new RegExp(`${obj.keyword || 'Include'}[\(](.+?)[\)]` ,'gm'),
-          verboseLogging:obj.keyword,
+          verboseLogging:obj.verboseLogging,
           beep:obj.beep,
         }
     }else{
