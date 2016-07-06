@@ -14,7 +14,7 @@ npm install webpack-file-injector-plugin
 ```
 
 ## API
-#### InjectFile
+#### InjectFile:Class
 
 `.options(Object)`
 
@@ -76,7 +76,7 @@ now it will look at the `Root directory` of the webpack process + `./compiled`;
 ---
 **webpack-file-injector-plugin** allow emits a `transform` event after injecting the contents of a file into each chunk that you can listen to.
 
-webpack.conf.js
+webpack.config.js
 ```
 let InjectFile = require('webpack-file-injector-plugin');
 
