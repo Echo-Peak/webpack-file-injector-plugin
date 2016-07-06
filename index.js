@@ -24,7 +24,6 @@ class InjectFile extends EventEmitter{
     let available;
 
     if(typeof obj === 'object' && obj !== null){
-        console.log('pass')
         available = {
           keyword:new RegExp(`${obj.keyword || 'Include'}[\(](.+?)[\)]` ,'gm'),
           verboseLogging:obj.keyword,
