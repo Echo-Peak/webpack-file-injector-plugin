@@ -1,71 +1,58 @@
-var applyOptions = require('./apply-options');
-var options = require('./options');
-var regexParser = require('./regex-parser');
-var contentBuilder = require('./content-builder');
+var path = require('path');
+var fs = require('fs');
+let EventEmitter = require('events');
+let plugin = require('./plugin');
+let replace = require('./replace');
+let getFile = require('./get-file');
 
-//available options
-/*
-{
-  enable:<boolean>
-  console:{
-  enabled:<boolean>,
-  color:<red , green , blue , lightBlue , purple ,yellow>
-},
-regex:{
-  startWith:/stuff/,
-  safe:true
-}
-}
-
-//should look like this  -> webpack-inject-loader?{"console":{"enabled":true ,color:'red'}}
-*/
-
-module.exports = function(content){
-   this.cacheable();
-    var array = [];
-    var stripComas;
-    var regex;
-    var query
-    var passedOptions;
-
-    if(!this.query ==='' || this.query !== undefined){
-       query = this.query.replace(/^\?/,'');
-         try{
-      var passedOptions = JSON.parse(query);
-      if(passedOptions.enable === false){return content}
-
-    }catch(e){
-      console.error('\x1b[31m','can not parse query' ,'\x1b[0m');
-      return content;
+class InjectFile extends EventEmitter{
+  constructor(){
+    super();
+    this.getFile = getFile.bind(this);
+    this.replace = replace.bind(this);
+    this.o = {
+        keyword:new RegExp(`Include[\(](.+?)[\)]` ,'gm'),
+        verboseLogging:true,
+        beep:false,
     }
+    this.getOptions = e => this.o;
+    this.plugin = new plugin(this)
+
+  }
+
+  options(obj){
+    let available;
+
+    if(typeof obj === 'object' && obj !== null){
+        console.log('pass')
+        available = {
+          keyword:new RegExp(`${obj.keyword || 'Include'}[\(](.+?)[\)]` ,'gm'),
+          verboseLogging:obj.keyword,
+          beep:obj.beep,
+        }
+    }else{
+      this.stdout('warn','using default options' ,'yellow');
     }
-    applyOptions(passedOptions);//set regex console color ..ect
-    var Find = regexParser(); //returns the regex use to find file paths
 
-    var foundMatches = content.match(Find);
 
-if(foundMatches === null){
-  return content
-}
+    this.o = available;
+  }
 
-if(foundMatches.length){
-
-    for(var i of foundMatches){
-      if(options.regex.safe){
-        //ques found matches to be used as big regex down below
-        array.push(i.replace('//','/\\/\\'));// formats // correctly for regex constructor
-      }else{
-        array.push(i) //unsafe...use before a loader that compiles javasript
-      }
-
+  stdout(type ,msg ,color){
+    let colors = {
+      red:'\x1b[31m',
+      lightBlue:'\x1b[36m',
+      green:'\x1b[32m',
+      yellow:'\x1b[33m',
+      blue:'\x1b[34m',
+      purple:'\x1b[35m',
+      _default:'\x1b[0m'
     }
-      stripComas = array.toString().replace(/,/g,'|');//builds the regex
-      options.regex.built = stripComas;
-      done = contentBuilder(content); //returns the the new content
 
-  return done
+    type === 'error' && this.getOptions().beepWhenError && process.stdout.write('\x07');
+
+    console.log(colors[color]+`${type.toUpperCase()}`+colors['_default'] , `${msg}`)
+  }
 
 }
-
-console.log(done)
-}
+module.exports =  new InjectFile()
